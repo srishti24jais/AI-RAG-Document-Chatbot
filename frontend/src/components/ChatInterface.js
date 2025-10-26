@@ -26,9 +26,11 @@ const ChatInterface = () => {
       };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
+      console.error('Chat error:', error);
+      console.error('Error details:', error.response?.data || error.message);
       const errorMessage = {
         type: 'bot',
-        content: 'Sorry, I encountered an error while processing your question. Please try again.',
+        content: `Sorry, I encountered an error: ${error.response?.data?.message || error.message || 'Please check your backend connection and try again.'}`,
         sources: [],
         citations: []
       };
@@ -139,4 +141,5 @@ const ChatInterface = () => {
 };
 
 export default ChatInterface;
+
 

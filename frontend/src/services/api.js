@@ -7,7 +7,32 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 60000, // 60 second timeout for AI processing
 });
+
+// Add request interceptor for debugging
+api.interceptors.request.use(
+  (config) => {
+    console.log('API Request:', config.method?.toUpperCase(), config.url);
+    return config;
+  },
+  (error) => {
+    console.error('Request error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor for debugging
+api.interceptors.response.use(
+  (response) => {
+    console.log('API Response:', response.status, response.config.url);
+    return response;
+  },
+  (error) => {
+    console.error('Response error:', error.response?.status, error.message);
+    return Promise.reject(error);
+  }
+);
 
 export const uploadDocument = async (file) => {
   const formData = new FormData();
@@ -28,7 +53,7 @@ export const chatWithDocuments = async (question) => {
 };
 
 export const checkHealth = async () => {
-  const response = await api.get('/documents/health');
+  const response = await api.get('/documents/actuator/health');
   return response.data;
 };
 

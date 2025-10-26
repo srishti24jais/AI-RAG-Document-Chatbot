@@ -3,6 +3,7 @@ package com.example.aidocumentsearch.service;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.model.output.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class RagService {
     private ChatLanguageModel chatLanguageModel;
 
     @Autowired
-    private VectorDatabaseService vectorDatabaseService;
+    private QdrantVectorService vectorDatabaseService;
 
     @Autowired
     private EmbeddingService embeddingService;
@@ -47,9 +48,18 @@ public class RagService {
                 "Context:\n%s\n\nQuestion: %s\n\nAnswer:",
                 context, question);
 
+        // Debug logging
+        System.out.println("=== RAG PROMPT DEBUG ===");
+        System.out.println("Question: " + question);
+        System.out.println("Context length: " + context.length() + " characters");
+        System.out.println("Prompt length: " + prompt.length() + " characters");
+        System.out.println("First 200 chars of context: " + context.substring(0, Math.min(200, context.length())));
+        System.out.println("=== END DEBUG ===");
+
         // Generate response using the chat model
         UserMessage userMessage = UserMessage.from(prompt);
-        AiMessage aiMessage = chatLanguageModel.generate(userMessage).content();
+        Response<AiMessage> response = chatLanguageModel.generate(userMessage);
+        AiMessage aiMessage = response.content();
         
         return aiMessage.text();
     }

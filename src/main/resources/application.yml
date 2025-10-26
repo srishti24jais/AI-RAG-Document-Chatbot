@@ -20,3 +20,12 @@ logging:
     com.example.aidocumentsearch: DEBUG
     dev.langchain4j: DEBUG
 
+# Application Configuration
+app:
+  chunk:
+    size: 1000
+    overlap: 200
+  top:
+    k:
+      results: 5
+

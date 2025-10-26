@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class QdrantVectorService implements VectorDatabaseService {
+public class QdrantVectorService {
 
     @Value("${qdrant.host:localhost}")
     private String qdrantHost;
@@ -29,7 +29,6 @@ public class QdrantVectorService implements VectorDatabaseService {
     private final Map<String, List<Double>> vectorStorage = new HashMap<>();
     private final Map<String, Map<String, Object>> metadataStorage = new HashMap<>();
 
-    @Override
     public int storeDocumentChunks(List<String> chunks, String filename) {
         int storedCount = 0;
         
@@ -55,7 +54,6 @@ public class QdrantVectorService implements VectorDatabaseService {
         return storedCount;
     }
 
-    @Override
     public List<String> searchSimilarChunks(List<Double> queryEmbedding, int topK) {
         // Simple cosine similarity search
         List<SimilarityResult> results = new ArrayList<>();
@@ -83,13 +81,11 @@ public class QdrantVectorService implements VectorDatabaseService {
         return topChunks;
     }
 
-    @Override
     public void deleteAllDocuments() {
         vectorStorage.clear();
         metadataStorage.clear();
     }
 
-    @Override
     public boolean isAvailable() {
         // For demo purposes, always return true
         // In production, this would check Qdrant connection
@@ -128,4 +124,5 @@ public class QdrantVectorService implements VectorDatabaseService {
         }
     }
 }
+
 

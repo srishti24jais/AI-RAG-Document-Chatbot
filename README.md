@@ -15,7 +15,7 @@ A full-stack AI-powered document search application that allows users to upload 
 - **Frontend**: React.js with Tailwind CSS
 - **Backend**: Spring Boot (Java) with REST API
 - **Vector Database**: Qdrant for semantic search
-- **AI Integration**: OpenAI GPT models for question answering
+- **AI Integration**: OpenAI embeddings and GPT models for question answering
 - **Deployment**: Docker Compose for local development
 
 ## 🛠️ Tech Stack
@@ -24,24 +24,25 @@ A full-stack AI-powered document search application that allows users to upload 
 - React 18
 - Tailwind CSS
 - Axios for API calls
-- React Router
+- React Dropzone for file upload
 
 ### Backend
 - Spring Boot 2.7.18
 - Java 11
 - LangChain4j for AI integration
 - PDFBox for PDF processing
-- Qdrant client for vector operations
+- In-memory vector storage (Qdrant-ready)
 
-### Database
-- Qdrant Vector Database
-- OpenAI Embeddings (text-embedding-ada-002)
+### AI Integration
+- **Chat**: Gemini Pro (subscription) or OpenAI GPT-3.5-turbo
+- **Embeddings**: OpenAI text-embedding-3-small
+- Vector search with cosine similarity
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Docker and Docker Compose
-- OpenAI API Key
+- Gemini Pro API Key (recommended) or OpenAI API Key
 
 ### Local Development
 
@@ -54,18 +55,28 @@ A full-stack AI-powered document search application that allows users to upload 
 2. **Set up environment variables**
    ```bash
    cp env.example .env
-   # Edit .env and add your OpenAI API key
+   # Edit .env and add your API key
+   # Get Gemini key: https://aistudio.google.com/apikey
+   # Or get OpenAI key: https://platform.openai.com/api-keys
    ```
 
 3. **Start the application**
    ```bash
-   docker compose up -d
+   docker-compose up -d
    ```
 
 4. **Access the application**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:8080
    - Qdrant: http://localhost:6333
+
+### Quick Start Guide
+
+1. Get API key from [Google AI Studio](https://aistudio.google.com/apikey) (Gemini) or [OpenAI Platform](https://platform.openai.com/api-keys)
+2. Add to `.env` file: `GOOGLEAI_API_KEY=your_key_here` or `OPENAI_API_KEY=your_key_here`
+3. Run `docker-compose up -d`
+4. Open http://localhost:3000
+5. Upload a PDF and start chatting!
 
 ## 📁 Project Structure
 
@@ -97,7 +108,7 @@ ai-document-search/
 Create a `.env` file with the following variables:
 
 ```env
-# OpenAI Configuration
+# OpenAI Configuration (Required)
 OPENAI_API_KEY=your_openai_api_key_here
 
 # Vector Database Configuration
@@ -116,43 +127,29 @@ TOP_K_RESULTS=5
 
 ### Document Management
 - `POST /api/documents/upload` - Upload PDF documents
-- `GET /api/documents` - List uploaded documents
-- `DELETE /api/documents/{id}` - Delete document
+- `GET /api/documents/actuator/health` - Health check
 
 ### Chat Interface
-- `POST /api/chat` - Send chat message
-- `GET /api/chat/history` - Get chat history
+- `POST /api/chat` - Send chat message to query documents
 
 ## 🚀 Deployment
 
-### Vercel Deployment (Frontend)
+### Docker Compose (Recommended)
 
-1. **Connect to Vercel**
-   - Push your code to GitHub
-   - Connect your GitHub repo to Vercel
-   - Set environment variables in Vercel dashboard
+```bash
+# Start all services
+docker-compose up -d
 
-2. **Environment Variables for Vercel**
-   ```
-   REACT_APP_API_URL=https://your-backend-url.com
-   ```
+# Stop services
+docker-compose down
+```
 
-### Backend Deployment Options
+### Backend Deployment
 
-1. **Railway** (Recommended)
-   - Connect GitHub repo
-   - Set environment variables
-   - Deploy automatically
-
-2. **Heroku**
-   - Add Procfile for Java
-   - Set environment variables
-   - Deploy via Git
-
-3. **AWS/GCP/Azure**
-   - Use container services
-   - Set up load balancers
-   - Configure databases
+The application can be deployed to any platform that supports Docker:
+- AWS ECS, Google Cloud Run, Azure Container Instances
+- DigitalOcean App Platform, Railway, Render
+- Or deploy frontend separately to Vercel/Netlify
 
 ## 🤝 Contributing
 
@@ -168,8 +165,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- OpenAI for GPT models
+- LangChain4j team
 - Qdrant for vector database
 - Spring Boot team
 - React team
 - Tailwind CSS team
+- Apache PDFBox

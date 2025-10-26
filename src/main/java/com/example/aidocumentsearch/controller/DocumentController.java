@@ -2,7 +2,7 @@ package com.example.aidocumentsearch.controller;
 
 import com.example.aidocumentsearch.dto.UploadResponse;
 import com.example.aidocumentsearch.service.PdfProcessingService;
-import com.example.aidocumentsearch.service.VectorDatabaseService;
+import com.example.aidocumentsearch.service.QdrantVectorService;
 import com.example.aidocumentsearch.service.EmbeddingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class DocumentController {
     private PdfProcessingService pdfProcessingService;
 
     @Autowired
-    private VectorDatabaseService vectorDatabaseService;
+    private QdrantVectorService vectorDatabaseService;
 
     @Autowired
     private EmbeddingService embeddingService;
@@ -70,14 +70,9 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/health")
-    public ResponseEntity<String> healthCheck() {
-        boolean isAvailable = vectorDatabaseService.isAvailable();
-        if (isAvailable) {
-            return ResponseEntity.ok("Vector database is available");
-        } else {
-            return ResponseEntity.status(503).body("Vector database is not available");
-        }
+    @GetMapping("/actuator/health")
+    public ResponseEntity<String> actuatorHealth() {
+        return ResponseEntity.ok("{\"status\":\"UP\"}");
     }
 }
 
